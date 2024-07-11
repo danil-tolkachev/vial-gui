@@ -27,10 +27,13 @@ class VialDevice:
 
     def send(self, data):
         # add 00 at start for hidapi report id
+        print(">", data)
         return self.dev.write(b"\x00" + data)
 
     def recv(self, length, timeout_ms=0):
-        return bytes(self.dev.read(length, timeout_ms=timeout_ms))
+        data = bytes(self.dev.read(length, timeout_ms=timeout_ms))
+        print("<", data)
+        return data
 
     def close(self):
         self.dev.close()
