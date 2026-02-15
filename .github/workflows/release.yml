@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+
+  build-ergohaven:
+    uses: ./.github/workflows/main.yml
+
+  pre-release:
+    name: Release
+    needs:
+      - build-linux
+      - build-mac
+      - build-win
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'write'
+      packages: 'write'
+      pull-requests: 'read'
+
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v5
+        with:
+          pattern: vial-*
+          path: vial
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          files: |
+            vial/*
